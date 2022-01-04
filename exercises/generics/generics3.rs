@@ -10,18 +10,32 @@
 
 // Execute 'rustlings hint generics3' for hints!
 
-// I AM NOT DONE
 
-pub struct ReportCard {
-    pub grade: f32,
+pub struct ReportCard<T> {
+    pub grade: T,
     pub student_name: String,
     pub student_age: u8,
 }
 
-impl ReportCard {
+impl<T: std::fmt::Display> ReportCard<T> {
     pub fn print(&self) -> String {
         format!("{} ({}) - achieved a grade of {}",
             &self.student_name, &self.student_age, &self.grade)
+    }
+}
+
+pub enum PassFailGrade {
+    Pass,
+    Fail,
+}
+
+impl std::fmt::Display for PassFailGrade {
+
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match(self) {
+            Pass => write!(f, "Pass"),
+            Fail => write!(f, "Fail") 
+        }
     }
 }
 
@@ -31,7 +45,7 @@ mod tests {
 
     #[test]
     fn generate_numeric_report_card() {
-        let report_card = ReportCard {
+        let report_card = ReportCard::<f32> {
             grade: 2.1,
             student_name: "Tom Wriggle".to_string(),
             student_age: 12,
@@ -45,14 +59,26 @@ mod tests {
     #[test]
     fn generate_alphabetic_report_card() {
         // TODO: Make sure to change the grade here after you finish the exercise.
-        let report_card = ReportCard {
-            grade: 2.1,
+        let report_card = ReportCard::<&str> {
+            grade: "A+",
             student_name: "Gary Plotter".to_string(),
             student_age: 11,
         };
         assert_eq!(
             report_card.print(),
             "Gary Plotter (11) - achieved a grade of A+"
+        );
+    }
+    #[test]
+    fn generate_passfail_report_card() {
+        let report_card = ReportCard::<PassFailGrade> {
+            grade: PassFailGrade::Pass,
+            student_name: "John Plotter".to_string(),
+            student_age: 11,
+        };
+        assert_eq!(
+            report_card.print(),
+            "John Plotter (11) - achieved a grade of Pass"
         );
     }
 }
